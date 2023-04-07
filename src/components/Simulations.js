@@ -28,9 +28,9 @@ const simulations = [
 
 const Simulations = () => {
   return (
-    <section className="simulations py-12">
+    <section className="simulations py-6">
       <div className="container mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-6">Explore our simulations</h2>
+        <h2 className="text-3xl font-bold mb-6">Explore simulations</h2>
         <div className="flex flex-wrap justify-center">
           {simulations.map((feature) => (
             <Simulation
