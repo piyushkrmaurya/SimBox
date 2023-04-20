@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 const GravitationControls = () => {
-  const [mass1, setMass1] = useState(1);
-  const [mass2, setMass2] = useState(1);
-  const [radius1, setRadius1] = useState(1);
-  const [radius2, setRadius2] = useState(1);
+  const [mass1, setMass1] = useState(100000);
+  const [mass2, setMass2] = useState(1000);
+  const [radius1, setRadius1] = useState(20);
+  const [radius2, setRadius2] = useState(10);
   const [velocity1, setVelocity1] = useState(0);
   const [velocity2, setVelocity2] = useState(0);
 
@@ -33,7 +33,7 @@ const GravitationControls = () => {
   };
 
   return (
-    <form className="accent-purple-500">
+    <form className="controls accent-purple-500">
       <div className="form-group">
         <label htmlFor="mass-1-input">Mass 1</label>
         <input
@@ -41,6 +41,8 @@ const GravitationControls = () => {
           className="form-control-range block w-full"
           id="mass-1-input"
           value={mass1}
+          min="10"
+          max="500000"
           onChange={handleMass1Change}
         />
       </div>
@@ -51,6 +53,8 @@ const GravitationControls = () => {
           className="form-control-range block w-full"
           id="mass-2-input"
           value={mass2}
+          min="10"
+          max="500000"
           onChange={handleMass2Change}
         />
       </div>

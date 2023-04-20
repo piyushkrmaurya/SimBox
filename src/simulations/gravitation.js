@@ -1,36 +1,41 @@
-export default () => {
+const simulationScript = () => {
   const GRAVITATIONAL_CONSTANT = 20;
 
   const canvas = document.querySelector("canvas"); // get the canvas element
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const ctx = canvas.getContext("2d"); // get the canvas context
+  const radius1Input = document.querySelector("#radius-1-input");
+  const radius2Input = document.querySelector("#radius-2-input");
+
+  const mass1Input = document.querySelector("#mass-1-input");
+  const mass2Input = document.querySelector("#mass-2-input");
+
+  // define the timestep and number of iterations for the simulation
+  const timestep = 1 / 60; // timestep in seconds (60 fps)
 
   // define the properties of the large sphere (central body)
   const centralBody = {
-    mass: 100000, // mass of Earth in kilograms
-    radius: 20, // radius of Earth in meters
+    mass: mass1Input.value, // mass of Earth in kilograms
+    radius: radius1Input.value, // radius of Earth in meters
     position: [canvas.width / 2, canvas.height / 2], // position of central body on canvas (at center)
     velocity: [0, 0], // initial velocity of satellite (at rest)
   };
 
   // define the properties of the small sphere (satellite)
   const satellite = {
-    mass: 1000, // mass of satellite in kilograms
-    radius: 10, // radius of satellite in meters (scaled up for visibility on canvas)
+    mass: mass2Input.value, // mass of satellite in kilograms
+    radius: radius2Input.value, // radius of satellite in meters (scaled up for visibility on canvas)
     position: [canvas.width / 2, canvas.height / 2 - 150], // initial position of satellite (on y-axis above central body)
     velocity: [100, 0], // initial velocity of satellite (at rest)
   };
 
-  // define the timestep and number of iterations for the simulation
-  const timestep = 1 / 60; // timestep in seconds (60 fps)
-  const numIterations = 10000; // number of iterations
+  const drawImage = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-  let iteration = 0; // current iteration of the simulation
+    const ctx = canvas.getContext("2d"); // get the canvas context
 
-  // run the simulation
-  function simulate() {
     // calculate the gravitational force acting on the satellite
     const r = satellite.position.map((x, i) => x - centralBody.position[i]); // vector from central body to satellite
     const rMag = Math.sqrt(r.reduce((sum, x) => sum + x ** 2, 0)); // magnitude of r
@@ -83,11 +88,24 @@ export default () => {
     ctx.fill();
 
     // request the next animation frame
-    if (iteration < numIterations) {
-      requestAnimationFrame(simulate);
-    }
-    iteration++;
-  }
+    requestAnimationFrame(drawImage);
+  };
 
-  requestAnimationFrame(simulate);
+  requestAnimationFrame(drawImage);
+
+  const updateParameters = () => {
+    centralBody.radius = radius1Input.value;
+    satellite.radius = radius2Input.value;
+    centralBody.mass = mass1Input.value;
+    satellite.mass = mass2Input.value;
+  };
+
+  let controls = document.querySelectorAll(".controls input");
+  controls = Array.from(controls);
+  controls.forEach((control) => {
+    control.addEventListener("input", updateParameters);
+    control.addEventListener("change", updateParameters);
+  });
 };
+
+export default simulationScript;

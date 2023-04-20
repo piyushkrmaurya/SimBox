@@ -13,7 +13,7 @@ const Hero = () => {
           we've got you covered.
         </p>
         <a
-          href="#"
+          href="simulations/gravitation"
           className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-3 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
         >
           Try it out

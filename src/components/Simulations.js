@@ -37,6 +37,7 @@ const Simulations = () => {
               id={feature.id}
               title={feature.title}
               image="https://via.placeholder.com/64x64"
+              key={feature.id}
             >
               {feature.summary}
             </Simulation>
