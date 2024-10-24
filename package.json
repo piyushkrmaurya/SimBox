@@ -1,43 +1,28 @@
 {
-  "name": "simbox",
-  "version": "0.1.0",
+  "name": "nextjs-app",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "mathjax-react": "^2.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.6.1",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next build && next export",
+    "lint": "next lint"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "lucide-react": "^0.546.0",
+    "next": "^14.0.0",
+    "next-pwa": "^5.6.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "tailwindcss": "^3.2.4"
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.0.0"
   }
 }

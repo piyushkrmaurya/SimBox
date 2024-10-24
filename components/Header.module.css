@@ -1,0 +1,117 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--color-background-alt);
+    padding: 0 var(--space-md);
+    height: 64px;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.logoEmoji {
+    font-size: 1.8rem;
+}
+
+.logoLink {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.logoText {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+.mobileHamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    z-index: 1201;
+    background: transparent;
+    border: none;
+    transition: background 0.2s;
+    padding: 0;
+}
+
+.mobileHamburger span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    margin: 4px 0;
+    background: var(--color-text-dark);
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.mobileHamburger.active>span {
+    background: var(--color-primary);
+}
+
+.mobileHamburger.active span:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+}
+
+.mobileHamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobileHamburger.active span:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg);
+}
+
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100%;
+    /* Use 100% for modern mobile browsers */
+    background: var(--color-background-alt);
+    z-index: 1200;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mobileMenu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobileMenu ul {
+    list-style: none;
+    margin: 0;
+    padding: 120px 40px 40px 40px;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    text-align: center;
+    transition: transform 0.3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.mobileMenu.active ul {
+    transform: translateX(0);
+}
+
+.mobileMenu li {
+    margin: 0 0 32px 0;
+}
+
+.mobileMenu a {
+    color: var(--color-text-dark);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    text-decoration: none;
+}

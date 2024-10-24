@@ -1,0 +1,14 @@
+.main {
+    background: var(--color-background);
+    min-height: calc(100vh - 64px);
+    /* Full height minus header and footer */
+    width: 100%;
+    padding: var(--space-sm);
+    /* Space for sticky header */
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding: 0;
+    }
+}

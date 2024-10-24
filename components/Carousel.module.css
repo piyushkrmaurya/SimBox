@@ -1,0 +1,143 @@
+/* Carousel Styles */
+.carouselOuter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    border-radius: 20px;
+}
+
+.carouselImageWrapper {
+    width: 100%;
+    height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--box-shadow-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.carouselTrack {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.carouselImage {
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.carouselOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), var(--color-shadow-cta-hover));
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(.4, 0, .2, 1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.carouselImageWrapper:hover .carouselOverlay {
+    opacity: 1;
+}
+
+.carouselNav {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.carouselNavButton {
+    background: linear-gradient(45deg, var(--color-secondary), var(--color-primary));
+    color: var(--color-text-white);
+    border: none;
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: 0 8px 25px var(--color-shadow-cta-hover);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.carouselImageWrapper:hover .carouselNavButton {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.carouselNavButtonLeft {
+    left: 18px;
+}
+
+.carouselNavButtonRight {
+    right: 18px;
+}
+
+.carouselNavButton:hover {
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 12px 32px var(--color-secondary-medium-translucent);
+    background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+}
+
+.carouselDots {
+    position: absolute;
+    bottom: var(--space-md);
+    display: flex;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-top: 0.7rem;
+}
+
+.carouselDot,
+.carouselDotActive {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-border-light);
+    display: inline-block;
+    cursor: pointer;
+    transition: background 0.3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.carouselDotActive {
+    background: linear-gradient(45deg, var(--color-secondary), var(--color-primary));
+}
+
+@media (max-width: 700px) {
+    .carouselOuter {
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .carouselImageWrapper {
+        height: 180px;
+        border-radius: 0;
+    }
+
+    .carouselImage {
+        height: 180px;
+        border-radius: 0;
+    }
+}
