@@ -7,6 +7,7 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = {
   output: 'export',
+  basePath: '/SimBox',
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   distDir: 'dist',
