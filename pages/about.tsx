@@ -20,7 +20,7 @@ export default function AboutPage() {
                         Welcome to SimBox, where we believe in the power of interactive learning. Our mission is to transform complex educational concepts into engaging, hands-on simulations that are accessible to everyone, everywhere.
                     </p>
                     <p className={styles.simulationDesc}>
-                        We are a passionate team of educators, developers, and designers dedicated to creating high-quality learning tools. We aim to spark curiosity and foster a deeper understanding by allowing learners to "learn by doing."
+                        We are a passionate team of educators, developers, and designers dedicated to creating high-quality learning tools. We aim to spark curiosity and foster a deeper understanding by allowing learners to &ldquo;learn by doing.&rdquo;
                     </p>
                 </div>
             </Layout>

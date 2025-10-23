@@ -16,7 +16,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className={styles.simulationWrapper}>
-                    <p className={styles.simulationDesc} style={{ marginTop: 0 }}>We'd love to hear from you!</p>
+                    <p className={styles.simulationDesc} style={{ marginTop: 0 }}>We&rsquo;d love to hear from you!</p>
                     <p className={styles.simulationDesc}>
                         Have a question, feedback, or a suggestion for a new simulation? Reach out to us.
                     </p>

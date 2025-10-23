@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { distance } from "@/lib/geometry";
 import { SimulationLayout } from "./SimulationLayout";
 
@@ -14,7 +14,7 @@ export function PythagoreanExplorer() {
     // Vertices of the right-angled triangle
     const [vertexA, setVertexA] = useState<Point>({ x: 50, y: 150 });
     const [vertexB, setVertexB] = useState<Point>({ x: 250, y: 350 });
-    const vertexC: Point = { x: vertexA.x, y: vertexB.y }; // The right-angle vertex
+    const vertexC: Point = useMemo(() => ({ x: vertexA.x, y: vertexB.y }), [vertexA.x, vertexB.y]); // The right-angle vertex
 
     // Side lengths
     const sideB = distance(vertexA, vertexC); // a in a²+b²=c²
