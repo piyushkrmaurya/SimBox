@@ -91,7 +91,6 @@ body {
     margin: 0;
     font-family: var(--font-family-sans);
     scroll-behavior: smooth;
-    font-size: 15px;
     background: var(--color-background);
     color: var(--color-text-medium);
 }
@@ -184,10 +183,11 @@ h6 {
 p {
     line-height: 1.7;
     /* Slightly more than base for readability */
-    text-align: justify;
+    text-align: left;
+    /* Changed from 'justify' for better readability, especially on smaller screens */
 }
 
-/* ========================================
+/* ======================================== 
    LAYOUT AND CONTAINER STYLES
    ======================================== */
 
@@ -247,27 +247,10 @@ p {
 .card-image {
     width: 100%;
     height: 180px;
-    background-size: fir;
+    background-size: cover;
+    /* Changed from 'fir' to 'cover' for proper image scaling */
     background-position: center top;
     border-radius: 12px 12px 0 0;
-}
-
-.card-content {
-    padding: var(--space-md);
-}
-
-.card-title {
-    font-weight: 700;
-    color: var(--color-text-dark);
-    margin-bottom: var(--space-xs);
-    font-size: 1.1rem;
-}
-
-.card-text {
-    margin: 0;
-    color: var(--color-text-medium);
-    font-size: 0.95rem;
-    line-height: var(--line-height-base);
 }
 
 .breadcrumb-container {
@@ -295,32 +278,6 @@ p {
 
 .breadcrumb-link:hover {
     text-decoration: underline;
-}
-
-.card-image {
-    width: 100%;
-    height: 180px;
-    background-size: fir;
-    background-position: center top;
-    border-radius: 12px 12px 0 0;
-}
-
-.card-content {
-    padding: var(--space-md);
-}
-
-.card-title {
-    font-weight: 700;
-    color: var(--color-text-dark);
-    margin-bottom: var(--space-xs);
-    font-size: 1.1rem;
-}
-
-.card-text {
-    margin: 0;
-    color: var(--color-text-medium);
-    font-size: 0.95rem;
-    line-height: var(--line-height-base);
 }
 
 footer {
@@ -365,8 +322,9 @@ footer .col-lg-6 {
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
     background: var(--color-background);
-    background-image: url('/images/razorpay_qr.jpg');
     background-size: cover;
+    max-width: 100%;
+    height: auto;
     background-repeat: no-repeat;
 }
 
@@ -571,7 +529,8 @@ footer p {
 
 @media (max-width: 700px) {
     .container {
-        padding: 18px 6px;
+        padding: 18px var(--space-sm);
+        /* Increased horizontal padding for better aesthetics */
     }
 
     .footer-img {

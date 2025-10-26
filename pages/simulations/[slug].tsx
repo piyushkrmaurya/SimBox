@@ -3,7 +3,8 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Layout from '@/components/Layout';
 import { NotFound } from '@/components/NotFound';
 import styles from '@/styles/index.module.css';
-import { simulations, Simulation } from '@/data';
+import { simulations } from '@/data';
+import type { Simulation } from '@/data/types';
 
 // We only pass the serializable parts of the Simulation object from getStaticProps
 type SerializableSimulation = Omit<Simulation, 'component'>;

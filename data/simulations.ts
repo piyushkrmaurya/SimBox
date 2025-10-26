@@ -11,16 +11,7 @@ import { GasLawsExplorer } from '@/components/GasLawsExplorer';
 import { WaveMotionExplorer } from '@/components/WaveMotionExplorer';
 import { LinearTransformationsExplorer } from '@/components/LinearTransformationsExplorer';
 
-export type Simulation = {
-    slug: string;
-    title: string;
-    description: string;
-    shortDescription: string;
-    component: ComponentType;
-    icon: string;
-    category: 'Math' | 'Physics' | 'Chemistry';
-    status: 'live' | 'coming-soon';
-};
+import type { Simulation, CurriculumSubject, CurriculumGrade, CurriculumChapter, Curriculum } from './types';
 
 export const simulations: Simulation[] = [
     {
@@ -144,3 +135,106 @@ export const simulations: Simulation[] = [
         status: 'live',
     }
 ];
+
+export const curriculum: Curriculum = {
+    class6: {
+        title: 'Class 6 Curriculum',
+        subjects: {
+            science: {
+                title: 'Science',
+                chapters: [
+                    {
+                        title: 'The Wonderful World of Science',
+                        slug: 'world-of-science',
+                        simulationSlugs: ['gravity-simulation'],
+                    },
+                    {
+                        title: 'Diversity in the Living World',
+                        slug: 'diversity-in-living-world',
+                        simulationSlugs: ['pendulum-simulation'],
+                    },
+                    {
+                        title: 'Mindful Eating: A Path to a Healthy Body',
+                        slug: 'mindful-eating',
+                        simulationSlugs: ['gas-laws-simulator'], // Chemistry example
+                    },
+                    {
+                        title: 'Exploring Magnets',
+                        slug: 'exploring-magnets',
+                        simulationSlugs: ['double-slit-experiment'],
+                    },
+                    {
+                        title: 'Measurement of Length and Motion',
+                        slug: 'measurement-and-motion',
+                        simulationSlugs: ['projectile-motion', 'wave-motion'],
+                    },
+                    {
+                        title: 'Materials Around Us',
+                        slug: 'materials-around-us',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Temperature and its Measurement',
+                        slug: 'temperature-measurement',
+                        simulationSlugs: ['gas-laws-simulator'],
+                    },
+                    {
+                        title: 'A Journey through States of Water',
+                        slug: 'states-of-water',
+                        simulationSlugs: ['states-of-water'],
+                    },
+                    {
+                        title: 'Methods of Separation in Everyday Life',
+                        slug: 'methods-of-separation',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Living Creatures: Exploring their Characteristics',
+                        slug: 'living-creatures',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Nature\'s Treasures',
+                        slug: 'natures-treasures',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Beyond Earth',
+                        slug: 'beyond-earth',
+                        simulationSlugs: ['lens-ray-diagram'],
+                    },
+                ] as CurriculumChapter[],
+            } as CurriculumSubject,
+            math: {
+                title: 'Mathematics',
+                chapters: [
+                    {
+                        title: 'Knowing Our Numbers',
+                        slug: 'knowing-our-numbers',
+                        simulationSlugs: ['unit-circle'],
+                    },
+                    {
+                        title: 'Integers',
+                        slug: 'integers',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Fractions',
+                        slug: 'fractions',
+                        simulationSlugs: [],
+                    },
+                    {
+                        title: 'Basic Geometrical Ideas',
+                        slug: 'geometrical-ideas',
+                        simulationSlugs: ['cyclic-quadrilateral', 'linear-transformations'],
+                    },
+                    {
+                        title: 'Mensuration',
+                        slug: 'mensuration',
+                        simulationSlugs: ['pythagorean-theorem'],
+                    },
+                ] as CurriculumChapter[],
+            } as CurriculumSubject,
+        },
+    } as CurriculumGrade,
+}

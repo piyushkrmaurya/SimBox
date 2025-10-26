@@ -5,6 +5,7 @@
     width: 100%;
     padding: var(--space-sm);
     /* Space for sticky header */
+    margin-bottom: 25px;
 }
 
 @media (max-width: 768px) {
