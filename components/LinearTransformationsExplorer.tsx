@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useCallback, MutableRefObject, useMemo } from 'react';
+import { ControlsContainer } from './controls/ControlsContainer';
+import { ControlsConfig, ControlValue } from '../types/controls';
 import { SimulationLayout } from './SimulationLayout';
 
 type Matrix = [[number, number], [number, number]];
@@ -124,15 +126,44 @@ const checkPointInCurrentShape = (point: { x: number, y: number }, shapeType: Sh
     }
     return false;
 };
+
+const controls: ControlsConfig = {
+    shape: {
+        type: 'select', id: 'shape-select', label: 'Select Shape', defaultValue: 'square',
+        options: [
+            { value: 'square', label: 'Square' },
+            { value: 'triangle', label: 'Triangle' },
+            { value: 'circle', label: 'Circle' },
+            { value: 'image', label: 'Uploaded Image' },
+        ]
+    },
+    m00: { type: 'range', id: 'm00', label: 'a (x-scale)', min: -2, max: 2, step: 0.1, defaultValue: 1 },
+    m01: { type: 'range', id: 'm01', label: 'b (y-shear)', min: -2, max: 2, step: 0.1, defaultValue: 0 },
+    m10: { type: 'range', id: 'm10', label: 'c (x-shear)', min: -2, max: 2, step: 0.1, defaultValue: 0 },
+    m11: { type: 'range', id: 'm11', label: 'd (y-scale)', min: -2, max: 2, step: 0.1, defaultValue: 1 },
+};
+
 export const LinearTransformationsExplorer = () => {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const canvasSizeRef = useRef({ width: 0, height: 0 });
     const canvasRef = useRef<HTMLCanvasElement>(null); // Local ref for mouse events
 
-    const [matrix, setMatrix] = useState<Matrix>([[1, 0], [0, 1]]);
+    const [values, setValues] = useState<{ [key: string]: ControlValue }>({
+        shape: controls.shape.defaultValue,
+        m00: controls.m00.defaultValue,
+        m01: controls.m01.defaultValue,
+        m10: controls.m10.defaultValue,
+        m11: controls.m11.defaultValue,
+    });
+
+    const matrix: Matrix = useMemo(() => [
+        [values.m00 as number, values.m01 as number],
+        [values.m10 as number, values.m11 as number]
+    ], [values.m00, values.m01, values.m10, values.m11]);
+
     const [shapeOffset, setShapeOffset] = useState({ x: 0, y: 0 });
     const dragStateRef = useRef({ isDraggingShape: false, dragStartOffset: { x: 0, y: 0 } });
-    const [selectedShapeType, setSelectedShapeType] = useState<ShapeType | 'image'>('square');
+    const selectedShapeType = values.shape as ShapeType | 'image';
     const [userImage, setUserImage] = useState<HTMLImageElement | null>(null);
     const currentShape = useMemo(() => selectedShapeType !== 'image' ? shapes[selectedShapeType] : [], [selectedShapeType]);
 
@@ -195,13 +226,6 @@ export const LinearTransformationsExplorer = () => {
         // Re-draw whenever the matrix or canvas size changes
         draw(); // draw is already memoized and depends on matrix and shapeOffset
     }, [draw]); // Only draw is needed here as a dependency
-
-    const handleMatrixChange = (row: number, col: number, value: string) => {
-        const numValue = parseFloat(value) || 0;
-        const newMatrix = [...matrix].map(r => [...r]) as Matrix;
-        newMatrix[row][col] = numValue;
-        setMatrix(newMatrix);
-    };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -299,49 +323,22 @@ export const LinearTransformationsExplorer = () => {
             }}
             tools={
                 <>
-                    <h3 className="simulationCardTitle" style={{ marginBottom: 0 }}>Transformation Matrix</h3>
-                    <div className="sim-controls-container" style={{ gridTemplateColumns: '1fr 1fr', background: 'none', padding: 0, marginTop: '1rem' }}>
-                        {/* New dropdown for shape selection */}
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="shape-select">Select Shape:</label>
-                            <select
-                                id="shape-select"
-                                value={selectedShapeType}
-                                onChange={(e) => setSelectedShapeType(e.target.value as ShapeType | 'image')}
-                                className="sim-select"
-                            >
-                                {Object.keys(shapes).map((shapeKey) => (
-                                    <option key={shapeKey} value={shapeKey}>{shapeKey.charAt(0).toUpperCase() + shapeKey.slice(1)}</option>
-                                ))}
-                                <option value="image">Uploaded Image</option>
-                            </select>
-                        </div>
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="image-upload">Upload Image:</label>
-                            <input
-                                type="file"
-                                id="image-upload"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="form-group"
-                            />
-                        </div>
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="m00">a (x-scale): {matrix[0][0].toFixed(1)}</label>
-                            <input id="m00" type="range" min="-2" max="2" step="0.1" value={matrix[0][0]} onChange={e => handleMatrixChange(0, 0, e.target.value)} className="form-group" />
-                        </div>
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="m01">b (y-shear): {matrix[0][1].toFixed(1)}</label>
-                            <input id="m01" type="range" min="-2" max="2" step="0.1" value={matrix[0][1]} onChange={e => handleMatrixChange(0, 1, e.target.value)} className="form-group" />
-                        </div>
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="m10">c (x-shear): {matrix[1][0].toFixed(1)}</label>
-                            <input id="m10" type="range" min="-2" max="2" step="0.1" value={matrix[1][0]} onChange={e => handleMatrixChange(1, 0, e.target.value)} className="form-group" />
-                        </div>
-                        <div className="sim-slider-group" style={{ gridColumn: 'span 2' }}>
-                            <label htmlFor="m11">d (y-scale): {matrix[1][1].toFixed(1)}</label>
-                            <input id="m11" type="range" min="-2" max="2" step="0.1" value={matrix[1][1]} onChange={e => handleMatrixChange(1, 1, e.target.value)} className="form-group" />
-                        </div>
+                    <h3 className="simulationCardTitle" style={{ marginBottom: '1rem' }}>Controls</h3>
+                    <ControlsContainer
+                        config={controls}
+                        values={values}
+                        onChange={(key, value) => setValues(prev => ({ ...prev, [key]: value }))}
+                        columns={1}
+                    />
+                    <div className="sim-slider-group" style={{ marginTop: '1rem' }}>
+                        <label htmlFor="image-upload">Upload Image:</label>
+                        <input
+                            type="file"
+                            id="image-upload"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="form-group"
+                        />
                     </div>
                 </>
             }

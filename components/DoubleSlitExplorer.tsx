@@ -1,15 +1,40 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ControlsConfig, ControlValue } from "../types/controls";
 import { SimulationLayout } from "./SimulationLayout";
+
+const controls: ControlsConfig = {
+    wavelength: {
+        type: 'range', id: 'wavelength', label: 'Wavelength (λ)',
+        min: 5, max: 20, step: 0.5, unit: ' nm', defaultValue: 10
+    },
+    slitSeparation: {
+        type: 'range', id: 'slit-separation', label: 'Slit Separation (d)',
+        min: 20, max: 100, step: 1, unit: ' px', defaultValue: 50
+    },
+    slitWidth: {
+        type: 'range', id: 'slit-width', label: 'Slit Width (a)',
+        min: 2, max: 20, step: 1, unit: ' px', defaultValue: 10
+    }
+};
 
 export function DoubleSlitExplorer() {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const canvasSizeRef = useRef({ width: 0, height: 0 });
 
-    const [slitSeparation, setSlitSeparation] = useState(50); // 'b' in original code
-    const [slitWidth, setSlitWidth] = useState(10); // 'a' in original code
-    const [wavelength, setWavelength] = useState(10); // 'lambda' in original code
+    const [values, setValues] = useState<{ [key: string]: ControlValue }>({
+        wavelength: controls.wavelength.defaultValue,
+        slitSeparation: controls.slitSeparation.defaultValue,
+        slitWidth: controls.slitWidth.defaultValue,
+    });
+
+    const { wavelength, slitSeparation, slitWidth } = values as {
+        wavelength: number;
+        slitSeparation: number;
+        slitWidth: number;
+    };
 
     const draw = useCallback(() => {
         const ctx = ctxRef.current;
@@ -85,14 +110,10 @@ export function DoubleSlitExplorer() {
         // but not for animation. The initial draw is in handleCanvasSetup.
         // The animation loop is not needed here as it's not an animated simulation.
         const timeoutId = setTimeout(() => {
-            draw();
+            if (ctxRef.current) draw();
         }, 0);
 
         return () => clearTimeout(timeoutId);
-    }, [slitSeparation, slitWidth, wavelength, draw]);
-
-    useEffect(() => {
-        draw();
     }, [draw]);
 
     return (
@@ -100,29 +121,7 @@ export function DoubleSlitExplorer() {
             setup={handleCanvasSetup}
             canvasHeight={500}
             tools={
-                <div className="sim-controls-container" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
-                    <div className="sim-slider-group">
-                        <label htmlFor="wavelength">Wavelength (λ): {wavelength} nm</label>
-                        <input
-                            type="range" id="wavelength" min="5" max="20" step="0.5"
-                            value={wavelength} onChange={(e) => setWavelength(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="slit-separation">Slit Separation (d): {slitSeparation} px</label>
-                        <input
-                            type="range" id="slit-separation" min="20" max="100" step="1"
-                            value={slitSeparation} onChange={(e) => setSlitSeparation(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="slit-width">Slit Width (a): {slitWidth} px</label>
-                        <input
-                            type="range" id="slit-width" min="2" max="20" step="1"
-                            value={slitWidth} onChange={(e) => setSlitWidth(Number(e.target.value))}
-                        />
-                    </div>
-                </div>
+                <ControlsContainer config={controls} values={values} onChange={(key, value) => setValues(prev => ({ ...prev, [key]: value }))} columns={3} />
             }
             canvas={
                 (ref) => <canvas ref={ref} />

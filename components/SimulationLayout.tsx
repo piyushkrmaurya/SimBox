@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
+import styles from '../styles/simulation.module.css';
 
 type CanvasSetupPayload = {
     ctx: CanvasRenderingContext2D;
@@ -41,48 +42,70 @@ export function SimulationLayout({ canvas, setup, tools, info, infoText, canvasH
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    useEffect(() => {
-        const setupCanvas = () => {
-            const canvasEl = canvasRef.current;
-            if (!canvasEl) return;
-            const container = canvasEl.parentElement as HTMLElement;
-            const size = {
-                width: container.clientWidth,
-                height: canvasHeight === -1 ? container.clientWidth
-                    : (canvasHeight || container.clientWidth * (window.innerHeight / window.innerWidth)),
-            };
-            const dpr = window.devicePixelRatio || 1;
+    const setupCanvas = useCallback(() => {
+        const canvasEl = canvasRef.current;
+        if (!canvasEl) return;
 
-            canvasEl.width = size.width * dpr;
-            canvasEl.height = size.height * dpr;
-            canvasEl.style.width = `${size.width}px`;
-            canvasEl.style.height = `${size.height}px`;
+        const container = canvasEl.parentElement as HTMLElement;
+        if (!container) return;
 
-            const ctx = canvasEl.getContext("2d");
-            if (!ctx) return;
-            ctx.scale(dpr, dpr);
-            setup({ ctx, width: size.width, height: size.height });
+        let height;
+        if (canvasHeight === -1) {
+            height = container.clientWidth; // Square canvas
+        } else if (canvasHeight) {
+            height = canvasHeight; // Fixed height
+        } else {
+            height = container.clientWidth * (9 / 16); // Default to 16:9 aspect ratio
+        }
+
+        const size = {
+            width: container.clientWidth,
+            height: height,
         };
+        const dpr = window.devicePixelRatio || 1;
 
+        canvasEl.width = size.width * dpr;
+        canvasEl.height = size.height * dpr;
+        canvasEl.style.width = `${size.width}px`;
+        canvasEl.style.height = `${size.height}px`;
+
+        const ctx = canvasEl.getContext("2d");
+        if (!ctx) return;
+        ctx.scale(dpr, dpr);
+        setup({ ctx, width: size.width, height: size.height });
+    }, [setup, canvasHeight]);
+
+    useEffect(() => {
+        const canvasEl = canvasRef.current;
+        const container = canvasEl?.parentElement;
+        if (!container) return;
+
+        // Use ResizeObserver for more efficient resize handling
+        const resizeObserver = new ResizeObserver(() => {
+            setupCanvas();
+        });
+        resizeObserver.observe(container);
+
+        // Initial setup
         setupCanvas();
-        window.addEventListener("resize", setupCanvas);
-        return () => window.removeEventListener("resize", setupCanvas);
-    }, [setup, isFullscreen, canvasHeight]);
+
+        return () => resizeObserver.disconnect();
+    }, [setupCanvas]);
 
     return (
-        <div ref={layoutRef} className={`sim-layout-wrapper ${isFullscreen ? 'sim-layout-wrapper--fullscreen' : ''} ${className || ''}`}>
-            <div className="sim-main-content">
-                <div className="sim-canvas-container">
+        <div ref={layoutRef} className={`${styles.simLayoutWrapper} ${isFullscreen ? styles.simLayoutWrapperFullscreen : ''} ${className || ''}`}>
+            <div className={styles.simMainContent}>
+                <div className={styles.simCanvasContainer}>
                     {canvas(canvasRef)}
-                    <button onClick={toggleFullscreen} className="sim-fullscreen-button" title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
+                    <button onClick={toggleFullscreen} className={styles.simFullscreenButton} title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}>
                         {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
                     </button>
                 </div>
             </div>
-            <div className={`sim-sidebar ${isFullscreen ? 'sim-sidebar--fullscreen' : ''}`}>
-                {tools && <div className="sim-controls-container">{tools}</div>}
-                {info && <div className="sim-results-container">{info}</div>}
-                {infoText && <p className="sim-info-text">{infoText}</p>}
+            <div className={`${styles.simSidebar} ${isFullscreen ? styles.simSidebarFullscreen : ''}`}>
+                {tools && <div className={styles.simControlsContainer}>{tools}</div>}
+                {info && <div className={styles.simResultsContainer}>{info}</div>}
+                {infoText && <p className={styles.simInfoText}>{infoText}</p>}
             </div>
         </div>
     );

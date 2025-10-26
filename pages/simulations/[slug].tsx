@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Layout from '@/components/Layout';
 import { NotFound } from '@/components/NotFound';
-import styles from '@/styles/index.module.css';
+import styles from '@/styles/simulation.module.css';
 import { simulations } from '@/data';
 import type { Simulation } from '@/data/types';
 
@@ -30,15 +30,7 @@ const SimulationPage: NextPage<SimulationPageProps> = ({ simulation }) => {
             </Head>
 
             <Layout>
-                <section id={`simulation-${simulation.slug}`} className={styles.section}>
-                    <div className={styles.simulationWrapperFullWidth}>
-                        <h1 className={styles.simulationTitle}>{simulation.title}</h1>
-                        <p className={styles.simulationDesc}>
-                            {simulation.description}
-                        </p>
-                        {ExplorerComponent && <ExplorerComponent />}
-                    </div>
-                </section>
+                {ExplorerComponent && <ExplorerComponent />}
             </Layout>
         </>
     );

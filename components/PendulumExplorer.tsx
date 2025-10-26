@@ -1,11 +1,29 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ControlsConfig, ControlValue } from "../types/controls";
 import { SimulationLayout } from "./SimulationLayout";
 
 type Point = { x: number; y: number };
 
 const TIMESTEP = 1 / 60; // 60 fps
+
+const controls: ControlsConfig = {
+    length: {
+        type: 'range', id: 'length', label: 'Pendulum Length',
+        min: 50, max: 300, step: 1, unit: 'px', defaultValue: 200
+    },
+    gravity: {
+        type: 'range', id: 'gravity', label: 'Gravity',
+        min: 1, max: 25, step: 0.1, unit: ' m/s²', defaultValue: 9.81
+    },
+    reset: {
+        type: 'button',
+        id: 'reset',
+        label: 'Reset Simulation'
+    }
+};
 
 export function PendulumExplorer() {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -16,8 +34,12 @@ export function PendulumExplorer() {
     });
     const canvasSizeRef = useRef({ width: 0, height: 0 });
 
-    const [length, setLength] = useState(200);
-    const [gravity, setGravity] = useState(9.81);
+    const [values, setValues] = useState<{ [key: string]: ControlValue }>({
+        length: controls.length.defaultValue,
+        gravity: controls.gravity.defaultValue,
+    });
+
+    const { length, gravity } = values as { length: number, gravity: number };
 
     const resetSimulation = useCallback(() => {
         pendulumStateRef.current = {
@@ -34,7 +56,7 @@ export function PendulumExplorer() {
 
     useEffect(() => {
         // Reset simulation when parameters change
-        resetSimulation();
+        if (ctxRef.current) resetSimulation();
     }, [length, gravity, resetSimulation]);
 
     const animate = useCallback(() => {
@@ -97,41 +119,25 @@ export function PendulumExplorer() {
         };
     }, [animate]);
 
+    const handleControlChange = (key: string, value: ControlValue) => {
+        setValues(prev => ({ ...prev, [key]: value }));
+    };
+
     return (
         <SimulationLayout
             setup={handleCanvasSetup}
             canvasHeight={500}
             tools={
-                <div className="sim-controls-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
-                    <div className="sim-slider-group">
-                        <label htmlFor="length">Pendulum Length: {length}px</label>
-                        <input
-                            type="range" id="length" min="50" max="300" step="1"
-                            value={length} onChange={(e) => setLength(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="gravity">Gravity: {gravity.toFixed(2)} m/s²</label>
-                        <input
-                            type="range" id="gravity" min="1" max="25" step="0.1"
-                            value={gravity} onChange={(e) => setGravity(Number(e.target.value))}
-                        />
-                    </div>
-                </div>
+                <ControlsContainer
+                    config={controls}
+                    values={values}
+                    onChange={handleControlChange}
+                    onAction={(key) => key === 'reset' && resetSimulation()}
+                    columns={1}
+                />
             }
             canvas={
                 (ref) => <canvas ref={ref} />
-            }
-            info={
-                <div className="sim-results-container" style={{ maxWidth: '100%', marginTop: '1.5rem' }}>
-                    <button
-                        onClick={resetSimulation}
-                        className="sim-button"
-                        style={{ width: '100%', textAlign: 'center' }}
-                    >
-                        Reset Simulation
-                    </button>
-                </div>
             }
         />
     );

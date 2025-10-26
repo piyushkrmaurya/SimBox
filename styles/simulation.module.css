@@ -1,0 +1,607 @@
+/* ========================================
+   SIMULATION PAGE LAYOUT
+   ======================================== */
+
+.layoutWrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-md);
+}
+
+@media (max-width: 768px) {
+    .layoutWrapper {
+        padding: var(--space-sm);
+    }
+}
+
+
+
+@media (min-width: 900px) {
+    .layoutWrapper {
+        grid-template-columns: 2fr 1fr;
+        gap: var(--space-lg);
+        align-items: start;
+    }
+}
+
+/* Fullscreen Mode */
+.layoutWrapperFullscreen {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-background);
+    padding: 0;
+    z-index: 2000;
+}
+
+.mainContent {
+    background: rgba(17, 24, 39, 0.5);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-md);
+}
+
+@media (max-width: 768px) {
+    .mainContent {
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #ffffff, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.description {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 900px) {
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        position: sticky;
+        top: var(--space-md);
+    }
+
+    .sidebar>.controlsContainer,
+    .sidebar>.resultsContainer {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+}
+
+.layoutWrapperFullscreen .canvasContainer {
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    margin: 0;
+}
+
+.layoutWrapperFullscreen .canvasContainer canvas {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.layoutWrapperFullscreen .sidebar {
+    position: absolute;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    width: 380px;
+    max-height: calc(100vh - (2 * var(--space-md)));
+    z-index: 10;
+    top: auto;
+    /* Override sticky positioning */
+}
+
+.sidebarFullscreen {
+    position: absolute;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    z-index: 10;
+    background: rgba(12, 10, 9, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-sm);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* ========================================
+   CANVAS & INTERACTION
+   ======================================== */
+
+.canvasContainer {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ========================================
+   CONTROLS & INPUTS
+   ======================================== */
+.controlsContainer {
+    background-color: var(--color-background-alt);
+    padding: 1rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 1.5rem;
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .controlsContainer {
+        padding: var(--space-sm);
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .resultsContainer {
+        padding: var(--space-sm);
+    }
+}
+
+.resultsContainer {
+    margin-top: 1.5rem;
+    width: 100%;
+    background-color: var(--color-background-alt);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.infoText {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+    text-align: center;
+    margin-top: var(--space-sm);
+}
+
+.fullscreenButton {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: var(--space-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+    opacity: 0.6;
+}
+
+.fullscreenButton:hover {
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 1;
+}
+
+.sliderGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.sliderGroup label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-medium);
+    margin-bottom: 0.5rem;
+}
+
+.sliderGroup label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-medium);
+    margin-bottom: 0.5rem;
+}
+
+.sliderGroup input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--color-border);
+    border-radius: 5px;
+    outline: none;
+}
+
+.sliderGroup input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.sliderGroup input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+.button {
+    padding: 0.75rem 1.5rem;
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: var(--border-radius-md);
+    transition: all 0.2s ease;
+    background-color: var(--color-primary);
+    color: var(--color-primary-text);
+    border: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.button:disabled {
+    background-color: var(--color-text-light);
+    cursor: not-allowed;
+}
+
+/* ========================================
+   RESULTS & DATA DISPLAY
+   ======================================== */
+
+
+.resultsRow {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+.resultsLabel {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-medium);
+    margin: 0;
+}
+
+.resultsValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.resultsOperator {
+    font-size: 2.25rem;
+    font-weight: 300;
+    color: var(--color-text-light);
+}
+
+.theoremSummary {
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    letter-spacing: 0.05em;
+}
+
+.resultsSeparator {
+    border-top: 1px solid var(--color-border);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Info Grid */
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.infoGridThreeCol {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 0.5rem 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.gridLabel {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-medium);
+}
+
+.value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 0.25rem;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Equation Display */
+.equationSummary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 1rem;
+    background-color: var(--color-background-alt);
+    border-radius: var(--border-radius-md);
+    margin-top: 1rem;
+}
+
+.equationOperator {
+    font-weight: 300;
+    color: var(--color-text-light);
+}
+
+.infoItem {
+    background-color: var(--color-background-alt);
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+.infoLabel {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-medium);
+    margin-bottom: 0.25rem;
+}
+
+.infoValue {
+    display: block;
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* ========================================
+   CUSTOM FORM ELEMENTS
+   ======================================== */
+.select {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-base);
+    background-color: var(--color-background-alt);
+    color: var(--color-text-dark);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+/* Custom zoom slider for canvas */
+.zoomSlider {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 150px;
+    height: 20px;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    outline: none;
+    padding: 5px;
+}
+
+.zoomSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--color-primary);
+    cursor: ns-resize;
+    border-radius: 50%;
+    border: 2px solid var(--color-background-alt);
+}
+
+.zoomSlider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--color-primary);
+    cursor: ns-resize;
+    border-radius: 50%;
+    border: 2px solid var(--color-background-alt);
+}
+
+/* Custom toggle switch */
+.toggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggleSwitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggleSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-border);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggleSlider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.toggleSlider {
+    background-color: var(--color-primary);
+}
+
+input:checked+.toggleSlider:before {
+    transform: translateX(26px);
+}
+
+/* ========================================
+   ALIASES FOR COMPONENT CLASSNAMES
+   ======================================== */
+
+.simLayoutWrapper {
+    composes: layoutWrapper;
+}
+
+.simLayoutWrapperFullscreen {
+    composes: layoutWrapperFullscreen;
+}
+
+.simMainContent {
+    composes: mainContent;
+}
+
+.simCanvasContainer {
+    composes: canvasContainer;
+}
+
+.simFullscreenButton {
+    composes: fullscreenButton;
+}
+
+.simSidebar {
+    composes: sidebar;
+}
+
+.simSidebarFullscreen {
+    composes: sidebarFullscreen;
+}
+
+.simControlsContainer {
+    composes: controlsContainer;
+}
+
+.simResultsContainer {
+    composes: resultsContainer;
+}
+
+.simInfoText {
+    composes: infoText;
+}
+
+.simSliderGroup {
+    composes: sliderGroup;
+}
+
+.simButton {
+    composes: button;
+}
+
+.simInfoGrid {
+    composes: infoGrid;
+}
+
+.simInfoItem {
+    composes: infoItem;
+}
+
+.simInfoLabel {
+    composes: infoLabel;
+}
+
+.simInfoValue {
+    composes: infoValue;
+}
+
+.simSelect {
+    composes: select;
+}
+
+
+/* ========================================
+   COLOR UTILITIES
+   ======================================== */
+.textAmber {
+    color: var(--color-amber);
+}
+
+.textViolet {
+    color: var(--color-violet);
+}
+
+.textEmerald {
+    color: var(--color-emerald);
+}
+
+.textEmeraldDark {
+    color: var(--color-success);
+}
+
+.textAmberDark {
+    color: #d97706;
+}
+
+.textBlue {
+    color: var(--color-info);
+}

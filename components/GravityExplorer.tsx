@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ControlsConfig, ControlValue } from "../types/controls";
 import { SimulationLayout } from "./SimulationLayout";
 
 type Point = { x: number; y: number };
@@ -15,16 +17,33 @@ type Body = {
 const GRAVITATIONAL_CONSTANT = 20;
 const TIMESTEP = 1 / 60; // 60 fps
 
+const controls: ControlsConfig = {
+    mass1: { type: 'range', id: 'mass1', label: 'Central Body Mass', min: 1000, max: 100000, step: 100, defaultValue: 10000 },
+    radius1: { type: 'range', id: 'radius1', label: 'Central Body Radius', min: 10, max: 100, step: 1, defaultValue: 40 },
+    mass2: { type: 'range', id: 'mass2', label: 'Satellite Mass', min: 1, max: 500, step: 1, defaultValue: 10 },
+    radius2: { type: 'range', id: 'radius2', label: 'Satellite Radius', min: 2, max: 30, step: 1, defaultValue: 8 },
+    reset: { type: 'button', id: 'reset', label: 'Reset Simulation' }
+};
+
 export function GravityExplorer() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const bodiesRef = useRef<[Body, Body] | null>(null);
     const canvasSizeRef = useRef({ width: 0, height: 0 });
 
-    const [mass1, setMass1] = useState(10000);
-    const [radius1, setRadius1] = useState(40);
-    const [mass2, setMass2] = useState(10);
-    const [radius2, setRadius2] = useState(8);
+    const [values, setValues] = useState<{ [key: string]: ControlValue }>({
+        mass1: 10000,
+        radius1: 40,
+        mass2: 10,
+        radius2: 8,
+    });
+
+    const { mass1, radius1, mass2, radius2 } = values as {
+        mass1: number;
+        radius1: number;
+        mass2: number;
+        radius2: number;
+    };
 
     const animationFrameId = useRef<number>();
 
@@ -34,25 +53,25 @@ export function GravityExplorer() {
 
         // Calculate a stable orbital velocity to start with
         const orbitalRadius = 150;
-        const orbitalVelocity = Math.sqrt((GRAVITATIONAL_CONSTANT * mass1) / orbitalRadius);
+        const orbitalVelocity = Math.sqrt((GRAVITATIONAL_CONSTANT * (values.mass1 as number)) / orbitalRadius);
 
         bodiesRef.current = [
             { // Central Body
-                mass: mass1,
-                radius: radius1,
+                mass: values.mass1 as number,
+                radius: values.radius1 as number,
                 position: { x: width / 2, y: height / 2 },
                 velocity: { x: 0, y: 0 },
                 color: "#FED8B1",
             },
             { // Satellite
-                mass: mass2,
-                radius: radius2,
+                mass: values.mass2 as number,
+                radius: values.radius2 as number,
                 position: { x: width / 2, y: height / 2 - orbitalRadius },
                 velocity: { x: orbitalVelocity, y: 0 },
                 color: "white",
             },
         ];
-    }, [mass1, mass2, radius1, radius2]);
+    }, [values]);
 
     const handleCanvasSetup = useCallback(({ ctx, width, height }: { ctx: CanvasRenderingContext2D, width: number, height: number }) => {
         ctxRef.current = ctx;
@@ -62,7 +81,7 @@ export function GravityExplorer() {
 
     useEffect(() => {
         resetSimulation(); // Reset when parameters change
-    }, [mass1, radius1, mass2, radius2, resetSimulation]);
+    }, [values, resetSimulation]);
 
     const animate = useCallback(() => {
         const ctx = ctxRef.current;
@@ -125,50 +144,18 @@ export function GravityExplorer() {
         <SimulationLayout
             setup={handleCanvasSetup}
             tools={
-                <div className="sim-controls-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
-                    <div className="sim-slider-group">
-                        <label htmlFor="mass1">Central Body Mass: {mass1}</label>
-                        <input
-                            type="range" id="mass1" min="1000" max="100000" step="100"
-                            value={mass1} onChange={(e) => setMass1(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="radius1">Central Body Radius: {radius1}</label>
-                        <input
-                            type="range" id="radius1" min="10" max="100"
-                            value={radius1} onChange={(e) => setRadius1(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="mass2">Satellite Mass: {mass2}</label>
-                        <input
-                            type="range" id="mass2" min="1" max="500"
-                            value={mass2} onChange={(e) => setMass2(Number(e.target.value))}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="radius2">Satellite Radius: {radius2}</label>
-                        <input
-                            type="range" id="radius2" min="2" max="30"
-                            value={radius2} onChange={(e) => setRadius2(Number(e.target.value))}
-                        />
-                    </div>
-                </div>
+                <ControlsContainer
+                    config={controls}
+                    values={values}
+                    onChange={(key, value) => {
+                        if (key !== 'reset') setValues(prev => ({ ...prev, [key]: value }));
+                    }}
+                    onAction={(key) => key === 'reset' && resetSimulation()}
+                    columns={2}
+                />
             }
             canvas={(ref) =>
                 <canvas ref={ref} />
-            }
-            info={
-                <div className="sim-results-container" style={{ maxWidth: '100%', marginTop: '1.5rem' }}>
-                    <button
-                        onClick={resetSimulation}
-                        className="sim-button"
-                        style={{ width: '100%', textAlign: 'center' }}
-                    >
-                        Reset Simulation
-                    </button>
-                </div>
             }
         />
     );

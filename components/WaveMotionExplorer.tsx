@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ControlsConfig, ControlValue } from "../types/controls";
 import { SimulationLayout } from "./SimulationLayout";
 
 type Wave = {
@@ -23,14 +25,38 @@ const createNewWave = (id: number): Wave => ({
     color: WAVE_COLORS[id % WAVE_COLORS.length],
 });
 
+const getWaveControls = (wave: Wave): ControlsConfig => ({
+    amplitude: {
+        type: 'range', id: `amplitude-${wave.id}`, label: 'Amplitude',
+        min: 10, max: 150, step: 1, defaultValue: wave.amplitude
+    },
+    frequency: {
+        type: 'range', id: `frequency-${wave.id}`, label: 'Frequency',
+        min: 0.005, max: 0.05, step: 0.001, defaultValue: wave.frequency
+    },
+    phaseShift: {
+        type: 'range', id: `phase-shift-${wave.id}`, label: 'Phase Shift',
+        min: 0, max: 2 * Math.PI, step: 0.05, defaultValue: wave.phaseShift,
+        displayValue: (val) => `${(val / Math.PI).toFixed(2)}π`
+    },
+    waveSpeed: {
+        type: 'range', id: `wave-speed-${wave.id}`, label: 'Wave Speed',
+        min: 0, max: 5, step: 0.1, defaultValue: wave.waveSpeed, unit: 'x'
+    }
+});
+
 export function WaveMotionExplorer() {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const canvasSizeRef = useRef({ width: 0, height: 0 });
     const animationFrameId = useRef<number>();
     const nextIdRef = useRef(1);
 
+    const [globalControls, setGlobalControls] = useState<{ [key: string]: ControlValue }>({
+        mode: 'overlay',
+    });
+    const mode = globalControls.mode as 'overlay' | 'interference';
+
     const [waves, setWaves] = useState<Wave[]>([createNewWave(0)]);
-    const [mode, setMode] = useState<'overlay' | 'interference'>('overlay');
 
     const draw = useCallback((time: number) => {
         const ctx = ctxRef.current;
@@ -135,82 +161,38 @@ export function WaveMotionExplorer() {
         if (waves.length === 1) addWave(); // Ensure there's always at least one
     };
 
+    const globalControlsConfig: ControlsConfig = {
+        mode: { type: 'toggle', id: 'mode-toggle', label: 'Interference Mode', defaultValue: false },
+        addWave: { type: 'button', id: 'add-wave', label: 'Add Wave' }
+    };
+
     return (
         <SimulationLayout
             setup={handleCanvasSetup}
             tools={
                 <>
-                    <div className="sim-controls-container" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-                        <div className="sim-slider-group">
-                            <label htmlFor="mode-toggle">Display Mode</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <span style={{ color: mode === 'overlay' ? 'white' : '#9ca3af' }}>Overlay</span>
-                                <label htmlFor="mode-toggle" style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px', cursor: 'pointer' }}>
-                                    <input
-                                        type="checkbox"
-                                        id="mode-toggle"
-                                        checked={mode === 'interference'}
-                                        onChange={(e) => setMode(e.target.checked ? 'interference' : 'overlay')}
-                                        style={{ opacity: 0, width: 0, height: 0 }}
-                                    />
-                                    <span style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        backgroundColor: mode === 'interference' ? '#34d399' : '#4b5563',
-                                        borderRadius: '34px',
-                                        transition: 'background-color 0.2s',
-                                    }}></span>
-                                    <span style={{
-                                        position: 'absolute',
-                                        content: '""',
-                                        height: '18px', width: '18px', left: '3px', bottom: '3px',
-                                        backgroundColor: 'white',
-                                        borderRadius: '50%',
-                                        transition: 'transform 0.2s',
-                                        transform: mode === 'interference' ? 'translateX(20px)' : 'translateX(0)',
-                                    }}></span>
-                                </label>
-                                <span style={{ color: mode === 'interference' ? 'white' : '#9ca3af' }}>Interference</span>
-                            </div>
-                        </div>
-                        <div className="sim-slider-group" style={{ justifyContent: 'center' }}>
-                            <button onClick={addWave} className="sim-button" style={{ width: '100%', height: '100%' }}>Add Wave</button>
-                        </div>
-                    </div>
+                    <ControlsContainer
+                        config={globalControlsConfig}
+                        values={{ mode: mode === 'interference' }}
+                        onChange={(key, value) => {
+                            if (key === 'mode') {
+                                setGlobalControls(prev => ({ ...prev, mode: value ? 'interference' : 'overlay' }));
+                            }
+                        }}
+                        onAction={(key) => {
+                            if (key === 'addWave') addWave();
+                        }}
+                        columns={2}
+                    />
 
                     {waves.map((wave, index) => (
-                        <div key={wave.id} className="sim-controls-container" style={{ borderLeft: `4px solid ${wave.color}`, marginTop: '1rem', background: 'rgba(255,255,255,0.02)' }}>
-                            <div className="sim-slider-group">
-                                <label htmlFor={`amplitude-${wave.id}`}>Amplitude: {wave.amplitude.toFixed(0)}</label>
-                                <input
-                                    type="range" id={`amplitude-${wave.id}`} min="10" max="150" step="1"
-                                    value={wave.amplitude} onChange={(e) => handleWaveChange(wave.id, 'amplitude', Number(e.target.value))}
-                                />
-                            </div>
-                            <div className="sim-slider-group">
-                                <label htmlFor={`frequency-${wave.id}`}>Frequency: {wave.frequency.toFixed(3)}</label>
-                                <input
-                                    type="range" id={`frequency-${wave.id}`} min="0.005" max="0.05" step="0.001"
-                                    value={wave.frequency} onChange={(e) => handleWaveChange(wave.id, 'frequency', Number(e.target.value))}
-                                />
-                            </div>
-                            <div className="sim-slider-group">
-                                <label htmlFor={`phase-shift-${wave.id}`}>Phase Shift: {(wave.phaseShift / Math.PI).toFixed(2)}π</label>
-                                <input
-                                    type="range" id={`phase-shift-${wave.id}`} min="0" max={2 * Math.PI} step="0.05"
-                                    value={wave.phaseShift} onChange={(e) => handleWaveChange(wave.id, 'phaseShift', Number(e.target.value))}
-                                />
-                            </div>
-                            <div className="sim-slider-group">
-                                <label htmlFor={`wave-speed-${wave.id}`}>Wave Speed: {wave.waveSpeed.toFixed(1)}x</label>
-                                <input
-                                    type="range" id={`wave-speed-${wave.id}`} min="0" max="5" step="0.1"
-                                    value={wave.waveSpeed} onChange={(e) => handleWaveChange(wave.id, 'waveSpeed', Number(e.target.value))}
-                                />
-                            </div>
+                        <div key={wave.id} style={{ borderLeft: `4px solid ${wave.color}`, marginTop: '1rem', background: 'rgba(255,255,255,0.02)', padding: '0.5rem 1rem' }}>
+                            <ControlsContainer
+                                config={getWaveControls(wave)}
+                                values={wave}
+                                onChange={(key, value) => handleWaveChange(wave.id, key as keyof Omit<Wave, 'id' | 'color'>, value as number)}
+                                columns={1}
+                            />
                             {waves.length > 1 && (
                                 <div className="sim-slider-group" style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
                                     <button onClick={() => removeWave(wave.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem' }}>Remove</button>

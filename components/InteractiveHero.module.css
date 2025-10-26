@@ -1,0 +1,234 @@
+.heroWrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(180deg,
+            #000000 0%,
+            #0a0a2c 15%,
+            #1a1a4a 30%,
+            #1a0f2e 45%,
+            #090924 60%,
+            #05051a 80%,
+            #000000 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    padding: 0;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 50% 0%;
+    }
+
+    50% {
+        background-position: 50% 100%;
+    }
+
+    100% {
+        background-position: 50% 0%;
+    }
+}
+
+.heroCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: default;
+    display: block;
+}
+
+.heroCanvas.interactive {
+    cursor: pointer;
+}
+
+.heroContent {
+    position: absolute;
+    z-index: 1;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    pointer-events: none;
+    /* Allow clicking through to the canvas */
+}
+
+.heroTitle {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(300deg,
+            #7aa2f7 0%,
+            #ffffff 20%,
+            #bb9af7 40%,
+            #2ac3de 60%,
+            #ff007c 80%,
+            #7aa2f7 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: supernovaShine 8s linear infinite;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.heroTitle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(20px) opacity(0.3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: supernovaShine 8s linear infinite;
+    z-index: -1;
+}
+
+@keyframes supernovaShine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.heroSubtitle {
+    font-size: clamp(var(--font-size-lg), 4vw, var(--font-size-xl));
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 600px;
+    margin: var(--space-md) auto 0;
+    line-height: 1.5;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.heroLogo {
+    position: relative;
+    margin-top: var(--space-lg);
+    animation: float 6s ease-in-out infinite;
+}
+
+.atomEmoji {
+    font-size: 6rem;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    animation: spin 20s linear infinite;
+    display: block;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.atomCore {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.atomOrbit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    border-radius: 50%;
+}
+
+.atomOrbit:nth-child(1) {
+    animation: orbit1 4s linear infinite;
+}
+
+.atomOrbit:nth-child(2) {
+    animation: orbit2 4s linear infinite;
+}
+
+.atomOrbit:nth-child(3) {
+    animation: orbit3 4s linear infinite;
+}
+
+.atomElectron {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes orbit1 {
+    from {
+        transform: rotate(120deg);
+    }
+
+    to {
+        transform: rotate(480deg);
+    }
+}
+
+@keyframes orbit2 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes orbit3 {
+    from {
+        transform: rotate(240deg);
+    }
+
+    to {
+        transform: rotate(600deg);
+    }
+}

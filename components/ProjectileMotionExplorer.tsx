@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ControlsConfig, ControlValue } from "../types/controls";
 import { SimulationLayout } from "./SimulationLayout";
 
 type Point = { x: number; y: number };
@@ -9,13 +11,32 @@ const GRAVITY = 9.81; // m/s^2
 const SCALE = 2; // pixels per meter
 const TIME_SCALE = 5; // slow down the simulation
 
+const controls: ControlsConfig = {
+    initialVelocity: {
+        type: 'range', id: 'velocity', label: 'Velocity',
+        min: 10, max: 100, step: 1, unit: ' m/s', defaultValue: 50
+    },
+    launchAngle: {
+        type: 'range', id: 'angle', label: 'Angle',
+        min: 1, max: 90, step: 1, unit: '°', defaultValue: 45
+    },
+    launch: {
+        type: 'button', id: 'launch', label: 'Launch',
+        disabledLabel: 'Simulating...'
+    }
+};
+
 export function ProjectileMotionExplorer() {
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const canvasSizeRef = useRef({ width: 0, height: 0 });
     const animationFrameId = useRef<number>();
 
-    const [initialVelocity, setInitialVelocity] = useState(50); // m/s
-    const [launchAngle, setLaunchAngle] = useState(45); // degrees
+    const [values, setValues] = useState<{ [key: string]: ControlValue }>({
+        initialVelocity: controls.initialVelocity.defaultValue,
+        launchAngle: controls.launchAngle.defaultValue,
+    });
+    const { initialVelocity, launchAngle } = values as { initialVelocity: number, launchAngle: number };
+
     const [isSimulating, setIsSimulating] = useState(false);
 
     const [path, setPath] = useState<Point[]>([]);
@@ -155,34 +176,23 @@ export function ProjectileMotionExplorer() {
             setup={handleCanvasSetup}
             canvasHeight={400}
             tools={
-                <div className="sim-controls-container" style={{ gridTemplateColumns: '1fr 1fr auto' }}>
-                    <div className="sim-slider-group">
-                        <label htmlFor="velocity">Velocity: {initialVelocity} m/s</label>
-                        <input
-                            type="range" id="velocity" min="10" max="100"
-                            value={initialVelocity}
-                            onChange={(e) => setInitialVelocity(Number(e.target.value))}
-                            disabled={isSimulating}
-                        />
-                    </div>
-                    <div className="sim-slider-group">
-                        <label htmlFor="angle">Angle: {launchAngle}°</label>
-                        <input
-                            type="range" id="angle" min="1" max="90"
-                            value={launchAngle}
-                            onChange={(e) => setLaunchAngle(Number(e.target.value))}
-                            disabled={isSimulating}
-                        />
-                    </div>
-                    <button
-                        onClick={handleLaunch}
-                        disabled={isSimulating}
-                        className="sim-button"
-                        style={{ alignSelf: 'end' }}
-                    >
-                        {isSimulating ? "Simulating..." : "Launch"}
-                    </button>
-                </div>
+                <ControlsContainer
+                    config={{
+                        ...controls,
+                        initialVelocity: { ...controls.initialVelocity, disabled: isSimulating },
+                        launchAngle: { ...controls.launchAngle, disabled: isSimulating },
+                        launch: { ...controls.launch, disabled: isSimulating }
+                    }}
+                    values={values}
+                    onChange={(key, value) => {
+                        if (isSimulating) return;
+                        setValues(prev => ({ ...prev, [key]: value }));
+                    }}
+                    onAction={(key) => {
+                        if (key === 'launch') handleLaunch();
+                    }}
+                    columns={1}
+                />
             }
             canvas={
                 (ref) => <canvas ref={ref} />

@@ -1,18 +1,49 @@
 .header {
     display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: rgba(99, 102, 241, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    width: calc(100% - 48px);
+    max-width: 1200px;
+    box-shadow:
+        0 0 20px rgba(99, 102, 241, 0.15),
+        0 0 40px rgba(99, 102, 241, 0.1),
+        inset 0 0 0 1px rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: headerFloat 6s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.headerMain {
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: var(--color-background-alt);
     padding: 0 var(--space-md);
     height: 64px;
-    border-bottom: 1px solid var(--color-border-light);
+}
+
+@keyframes headerFloat {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-8px);
+    }
 }
 
 .logoEmoji {
-    font-size: 1.8rem;
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px rgba(122, 162, 247, 0.5));
+    animation: logoGlow 3s ease-in-out infinite;
 }
 
 .logoLink {
@@ -20,12 +51,103 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.logoLink:hover {
+    background: rgba(99, 102, 241, 0.15);
 }
 
 .logoText {
     font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--color-text-dark);
+    background: linear-gradient(90deg,
+            #ffffff 0%,
+            #818cf8 50%,
+            #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+        0 0 20px rgba(99, 102, 241, 0.5),
+        0 0 40px rgba(99, 102, 241, 0.3);
+}
+
+@keyframes logoGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 10px rgba(122, 162, 247, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px rgba(42, 195, 222, 0.8));
+    }
+}
+
+.desktopNav {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .desktopNav {
+        display: block;
+    }
+
+    .desktopNav ul {
+        display: flex;
+        gap: 16px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .desktopNav a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+        background: rgba(255, 255, 255, 0);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .desktopNav a::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(99, 102, 241, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+        z-index: -1;
+    }
+
+    .desktopNav a:hover {
+        background: rgba(99, 102, 241, 0.15);
+        text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .desktopNav a:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .mobileHamburger {
+        display: none;
+    }
+
+    .mobileMenu {
+        display: none;
+    }
 }
 
 .mobileHamburger {
@@ -39,34 +161,42 @@
     z-index: 1201;
     background: transparent;
     border: none;
-    transition: background 0.2s;
-    padding: 0;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.mobileHamburger:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .mobileHamburger span {
     display: block;
     width: 28px;
-    height: 3px;
+    height: 2px;
     margin: 4px 0;
-    background: var(--color-text-dark);
-    border-radius: 2px;
-    transition: all 0.3s;
+    background: #ffffff;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
-.mobileHamburger.active>span {
-    background: var(--color-primary);
+.mobileHamburger.active span {
+    background: #7aa2f7;
+    box-shadow: 0 0 15px rgba(122, 162, 247, 0.5);
 }
 
 .mobileHamburger.active span:nth-child(1) {
-    transform: translateY(11px) rotate(45deg);
+    transform: translateY(10px) rotate(45deg);
 }
 
 .mobileHamburger.active span:nth-child(2) {
     opacity: 0;
+    transform: translateX(-10px);
 }
 
 .mobileHamburger.active span:nth-child(3) {
-    transform: translateY(-11px) rotate(-45deg);
+    transform: translateY(-10px) rotate(-45deg);
 }
 
 .mobileMenu {
@@ -75,10 +205,10 @@
     right: 0;
     width: 100vw;
     height: 100%;
-    /* Use 100% for modern mobile browsers */
-    background: var(--color-background-alt);
+    background: rgba(10, 10, 44, 0.95);
+    backdrop-filter: blur(12px);
     z-index: 1200;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: all 0.3s ease;
     opacity: 0;
     visibility: hidden;
     display: flex;
@@ -107,11 +237,149 @@
 
 .mobileMenu li {
     margin: 0 0 32px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.mobileMenu.active li {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobileMenu.active li:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.mobileMenu.active li:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.mobileMenu.active li:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.mobileMenu.active li:nth-child(4) {
+    transition-delay: 0.4s;
 }
 
 .mobileMenu a {
-    color: var(--color-text-dark);
+    color: #ffffff;
     font-size: var(--font-size-xl);
     font-weight: 700;
     text-decoration: none;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0);
+    overflow: hidden;
+}
+
+.mobileMenu a::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+    z-index: -1;
+}
+
+.mobileMenu a:hover {
+    background: rgba(99, 102, 241, 0.15);
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+.mobileMenu a:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.floatingIcons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.floatingIcon {
+    position: relative;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.iconEmoji {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 10px rgba(122, 162, 247, 0.3));
+    transition: all 0.3s ease;
+}
+
+.iconLabel {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%) translateY(4px);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.floatingIcon:hover {
+    opacity: 1;
+}
+
+.floatingIcon:hover .iconEmoji {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 15px rgba(122, 162, 247, 0.6));
+}
+
+.floatingIcon:hover .iconLabel {
+    opacity: 1;
+    transform: translateX(-50%) translateY(8px);
+}
+
+@keyframes float {
+    from {
+        transform: translate(calc(50vw + var(--distance, 30px)),
+                calc(50vh + var(--distance, 30px)));
+    }
+
+    25% {
+        transform: translate(calc(-50vw - var(--distance, 30px)),
+                calc(50vh + var(--distance, 30px)));
+    }
+
+    50% {
+        transform: translate(calc(-50vw - var(--distance, 30px)),
+                calc(-50vh - var(--distance, 30px)));
+    }
+
+    75% {
+        transform: translate(calc(50vw + var(--distance, 30px)),
+                calc(-50vh - var(--distance, 30px)));
+    }
+
+    to {
+        transform: translate(calc(50vw + var(--distance, 30px)),
+                calc(50vh + var(--distance, 30px)));
+    }
+}
+
+@media (max-width: 767px) {
+    .filterContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filterGroup {
+        min-width: 100%;
+    }
 }

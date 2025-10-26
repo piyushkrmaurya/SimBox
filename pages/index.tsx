@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import Layout from '@/components/Layout';
+import InteractiveHero from '@/components/InteractiveHero';
 import styles from '@/styles/index.module.css';
 import { simulations as allSimulations, curriculum } from '@/data';
 import type { Simulation } from '@/data';
@@ -75,14 +76,7 @@ export default function HomePage() {
       </Head>
 
       <Layout>
-        <div className={styles.welcomeHeader}>
-          <h1 className={styles.welcomeTitle}>Interactive Simulations</h1>
-          <p className={styles.welcomeSubtitle}>
-            Stop memorizing, Start Understanding!
-          </p>
-          <h1 className={styles.welcomeEmoji} role="img" aria-label="Waving Hand Emoji">👋
-          </h1>
-        </div>
+        <InteractiveHero />
 
         {/* --- Filters --- */}
         <section className={styles.section}>
