@@ -10,11 +10,13 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--space-md);
+    padding-top: 100px;
 }
 
 @media (max-width: 768px) {
     .layoutWrapper {
         padding: var(--space-sm);
+        padding-top: 80px;
     }
 }
 
