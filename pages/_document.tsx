@@ -14,7 +14,7 @@ export default function Document() {
         <link rel="icon" type="image/svg+xml" href={`${basePath}/favicon/favicon.svg`} />
         <link rel="shortcut icon" href={`${basePath}/favicon/favicon.ico`} />
         <link rel="apple-touch-icon" sizes="180x180" href={`${basePath}/favicon/apple-touch-icon.png`} />
-        <meta name="theme-color" content="#ff9933" />
+        <meta name="theme-color" content="#6366f1" />
       </Head>
       <body>
         <Main />
